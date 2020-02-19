@@ -3,10 +3,10 @@ module.exports = ({ user, SCI }) => {
         if (!user || typeof user !== "string") {
             return reject("Product user must be a valid string")
         }
-        // if (!SCI) {
-        //     console.log(Error("SCI IS MISSING"))
-        //     return reject("INTERNAL SERVER ERROR, TRY LATER")
-        // }
+        if (!SCI) {
+            console.log(Error("SCI IS MISSING"))
+            return reject("INTERNAL SERVER ERROR, TRY LATER")
+        }
 
         try {
             // if (!await SCI.User.checkUser(user)) {

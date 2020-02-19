@@ -1,7 +1,8 @@
 module.exports = class Product {
-    constructor({ product, DAO }) {
+    constructor({ product, DAO, SCI }) {
         this.product = product
         this.DAO = DAO
+        this.SCI = SCI
         this.entities = require("./SubEntities/ProductSubEntities")
     }
 
@@ -33,11 +34,11 @@ module.exports = class Product {
 
     global(product) {
         return new Promise(async (resolve, reject) => {
-            let { entities, DAO } = this
+            let { entities, DAO, SCI } = this
             let { user, name } = product
 
             try {
-                user = await entities.user({ user, DAO })
+                user = await entities.user({ user, SCI })
                 name = await entities.name(name)
 
                 let globalFields = {

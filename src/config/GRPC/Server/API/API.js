@@ -6,7 +6,7 @@ module.exports = class API {
         }
 
         this.dependencies = dependencies
-        this.Controller = require("../../../../src/app/Controller/Controller.js")
+        this.Controller = require("../../../../../src/app/Controller/Controller.js")
     }
 
     build() {

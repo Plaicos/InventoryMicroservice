@@ -1,6 +1,6 @@
 module.exports = class SCI {
     constructor() {
-        this.Interface = require("../../../GRPC/GRPC").Client
+        this.Interface = require("../../../GRPC/GRPC").exportClient()
     }
 
     build() {

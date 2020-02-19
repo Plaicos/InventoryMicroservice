@@ -1,8 +1,9 @@
 module.exports = class UseCases {
     constructor(dependencies) {
         this.dependencies = dependencies
-        let { DAO } = dependencies
+        let { DAO, SCI } = dependencies
 
+        this.SCI = SCI
         this.DAO = DAO
         this.entities = require("../Entities/entities")
     }
@@ -23,10 +24,10 @@ module.exports = class UseCases {
                 return reject("INTERNAL SERVER ERROR, TRY LATER")
             }
 
-            let { entities, DAO } = this
+            let { entities, DAO, SCI } = this
 
             try {
-                product = await new entities.Product({ product, DAO }).build()
+                product = await new entities.Product({ product, DAO, SCI }).build()
                 product.validate(credential)
                 await DAO.registerProduct(product)
                 resolve()

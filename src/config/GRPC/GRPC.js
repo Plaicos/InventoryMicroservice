@@ -1,17 +1,23 @@
-var serverBuilder = require("./Server/ServerBuilder").build
-var serviceFactory = new( require("./Service/ServiceFactory"))
-var apiBuilder = require("./API/API")
+function initialize(dependencies) {
+    let serverBuilder = require("./Server/ServerBuilder").build
+    let serviceFactory = new (require("./Server/Service/ServiceFactory"))
+    let apiBuilder = require("./Server/API/API")
 
-function initialize(dependencies){
     let service = serviceFactory.makeService()
     let api = new apiBuilder(dependencies).build()
     let server = serverBuilder(service, api)
-    
+
     server.start()
     console.log("GRPC INVENTORY SERVER RUNNING")
     return
 }
 
+function exportClient() {
+    let Client = new (require("./Client/clientBuilder"))().build()
+    return Client
+}
+
 module.exports = {
-    initialize
+    initialize,
+    exportClient
 }
