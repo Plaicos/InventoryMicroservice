@@ -112,6 +112,12 @@ module.exports = class Product {
         })
     }
 
+    mix(){
+        return new Promise((resolve, reject) => {
+            
+        });
+    }
+
     validate() {
         return function (credential) {
             console.log(this)
