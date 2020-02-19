@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+service Inventory {
+    rpc add_product (productMsg) returns (statusResponse);
+}
+
+message productMsg{
+    product product = 1;
+    credential credential = 2;
+}
+
+message product {
+    string user = 1;
+    string type = 2;
+    string name = 3;
+    string manufacturer = 4;
+    string made_in = 5;
+    repeated string application = 6;
+    repeated string inci_name = 7;
+    repeated string functions = 8;
+    string origin = 9;
+    int32 lead_time = 10;
+    int32 shelf_life = 11;
+    string availability = 12;
+    repeated packing packing = 13;
+    string free_from = 14;
+}
+
+message packing {
+    float weigth = 1;
+}
+
+message statusResponse {
+    string status = 1;
+}
+
+message scope {
+    bool read = 1;
+    bool write = 2;
+    third_party_scope third_party = 3;
+}
+
+message third_party_scope {
+    bool read = 1;
+    bool write = 2;
+}
+
+message credential {
+    string user = 1;
+    int32 level = 2;
+    scope scope = 3;
+}
