@@ -17,8 +17,42 @@ module.exports = class DAO {
         return new Promise(async (resolve, reject) => {
             try {
                 console.log("DAO product", product)
-                //await this.collections.products.insertOne(product)
+                await this.collections.products.insertOne(product)
                 resolve()
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
+    }
+
+    updateProduct(id, product) {
+        return new Promise(async (resolve, reject) => {
+            let { ObjectId } = this
+            try {
+                await this.collections.products.update({ _id: ObjectId(id) }, product)
+                resolve()
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
+    }
+
+    getProduct(id) {
+        return new Promise(async (resolve, reject) => {
+            let { ObjectId } = this
+
+            try {
+                this.collections.products.find({ _id: ObjectId(id) }).toArray((erro, result) => {
+                    if (erro) {
+                        return reject(erro)
+                    }
+                    if (result.length === 0) {
+                        return reject("That ID does not refere to any product")
+                    }
+                    resolve(result[0])
+                })
             }
             catch (erro) {
                 reject(erro)
@@ -28,6 +62,30 @@ module.exports = class DAO {
 
     checkAvailability(availability) {
 
+    }
+
+    checkProduct(id) {
+        return new Promise(async (resolve, reject) => {
+            let { ObjectId } = this
+
+            try {
+                this.collections.products.find({ _id: ObjectId(id) }).toArray((erro, result) => {
+                    if (erro) {
+                        return reject(erro)
+                    }
+
+                    if (result.length > 0) {
+                        resolve(true)
+                    }
+                    else {
+                        resolve(false)
+                    }
+                })
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
     }
 
     checkMadeIn(made_in) {
@@ -53,7 +111,7 @@ module.exports = class DAO {
                 if (erro) {
                     return reject(erro)
                 }
-                
+
                 if (result.length > 0) {
                     return resolve(true)
                 }

@@ -14,7 +14,8 @@ module.exports = class API {
         Controller = new Controller(dependencies)
 
         let api = {
-            add_product: Controller.add_product()
+            add_product: Controller.add_product(),
+            edit_product: Controller.edit_product()
         }
         return Object.freeze(api)
     }

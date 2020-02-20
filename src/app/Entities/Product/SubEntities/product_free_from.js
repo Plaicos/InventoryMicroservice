@@ -6,8 +6,11 @@ module.exports = (free_from) => {
         else if (free_from && free_from.length < 4) {
             return reject("Free From, when provided, must contain at least 4 characters")
         }
-        else {
+        else if (!free_from) {
             resolve(null)
+        }
+        else {
+            resolve(free_from)
         }
     })
 }

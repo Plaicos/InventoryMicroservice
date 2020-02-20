@@ -13,4 +13,5 @@ module.exports = {
     //move to marketplace
     availability: require("./product_availability"),
     free_from: require("./product_free_from"),
+    id: require("./product_id")
 }

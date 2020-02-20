@@ -2,6 +2,7 @@ syntax = "proto3";
 
 service Inventory {
     rpc add_product (productMsg) returns (statusResponse);
+    rpc edit_product (productEdit) returns (statusResponse);
 }
 
 message productMsg{
@@ -24,6 +25,12 @@ message product {
     string availability = 12;
     repeated packing packing = 13;
     string free_from = 14;
+}
+
+message productEdit {
+    string id = 1;
+    product changes = 2;
+    credential credential = 3;
 }
 
 message packing {

@@ -14,9 +14,27 @@ module.exports = class Controller {
         var self = this
         return async function (call, callback) {
             let { product, credential } = call.request
-           
+
             try {
                 await self.UseCases.add_product(product, credential)
+                let statusResponse = {
+                    status: "ok"
+                }
+                callback(null, statusResponse)
+            }
+            catch (erro) {
+                self.handleError(erro, callback)
+            }
+        }
+    }
+
+    edit_product() {
+        var self = this
+        return async function (call, callback) {
+            let { id, changes, credential } = call.request
+
+            try {
+                await self.UseCases.edit_product(id, changes, credential)
                 let statusResponse = {
                     status: "ok"
                 }

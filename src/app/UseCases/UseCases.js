@@ -28,7 +28,7 @@ module.exports = class UseCases {
 
             try {
                 product = await new entities.Product({ product, DAO, SCI }).build()
-                product.validate(credential)
+                await product.validate(credential)
                 await DAO.registerProduct(product)
                 resolve()
             }
@@ -38,15 +38,33 @@ module.exports = class UseCases {
         })
     }
 
-    delete_product(id) {
+    delete_product(id, credential) {
         return new Promise(async (resolve, reject) => {
-
+            
         })
     }
 
-    edit_product(is, changes) {
+    edit_product(id, changes, credential) {
         return new Promise(async (resolve, reject) => {
+            if (!changes || typeof changes !== "object") {
+                return reject("The product changes must be a valid object")
+            }
+            if (!credential) {
+                console.log(Error("CREDENTIAL IS MISSINGF"))
+                return reject("INTERNAL SERVER ERROR, TRY LATER")
+            }
 
+            let { entities, DAO, SCI } = this
+
+            try {
+                let editedProduct = await new entities.Product({ product: { id: id }, DAO, SCI }).edit(changes)
+                await editedProduct.validate(credential)
+                await DAO.updateProduct(id, editedProduct)
+                resolve()
+            }
+            catch (erro) {
+                reject(erro)
+            }
         })
     }
 }
