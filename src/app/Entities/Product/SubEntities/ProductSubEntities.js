@@ -13,5 +13,7 @@ module.exports = {
     //move to marketplace
     availability: require("./product_availability"),
     free_from: require("./product_free_from"),
-    id: require("./product_id")
+    id: require("./product_id"),
+    offset: require("./product_search_offset"),
+    limit: require("./product_search_limit")
 }

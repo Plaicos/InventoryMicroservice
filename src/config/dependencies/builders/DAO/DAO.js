@@ -13,10 +13,33 @@ module.exports = class DAO {
         }
     }
 
+    searchProduct(filters) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let offset = filters.offset
+                let limit = filters.limit
+                delete filters.offset
+                delete filters.limit
+
+                this.collections.products.find(filters).limit(limit).skip(offset).toArray((erro, result) => {
+                    if (erro) {
+                        reject(erro)
+                    }
+                    else {
+                        console.log({ filters, result })
+                        resolve(result)
+                    }
+                })
+            }
+            catch (erro) {
+                erro
+            }
+        })
+    }
+
     registerProduct(product) {
         return new Promise(async (resolve, reject) => {
             try {
-                console.log("DAO product", product)
                 await this.collections.products.insertOne(product)
                 resolve()
             }
@@ -53,6 +76,43 @@ module.exports = class DAO {
                     }
                     resolve(result[0])
                 })
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
+    }
+
+    getProductOwner(id) {
+        return new Promise(async (resolve, reject) => {
+            let { ObjectId } = this
+
+            try {
+                this.collections.products.find({ _id: ObjectId(id) }).toArray((erro, result) => {
+                    if (erro) {
+                        return reject(erro)
+                    }
+                    if (result.length === 0) {
+                        return reject("That ID does not refere to any product")
+                    }
+
+                    resolve(result[0].user)
+                })
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
+    }
+
+    deleteProduct(id) {
+        return new Promise(async (resolve, reject) => {
+            let { ObjectId } = this
+
+            try {
+                console.log("deleted")
+                await this.collections.products.deleteOne({ _id: ObjectId(id) })
+                resolve()
             }
             catch (erro) {
                 reject(erro)

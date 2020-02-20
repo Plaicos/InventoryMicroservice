@@ -40,7 +40,23 @@ module.exports = class UseCases {
 
     delete_product(id, credential) {
         return new Promise(async (resolve, reject) => {
-            
+            if (!id || typeof id !== "string") {
+                return reject("The ID must be a valid string")
+            }
+            if (!credential) {
+                console.log(Error("CREDENTIAL IS MISSING"))
+                return reject("INTERNAL SERVER ERROR, TRY LATER")
+            }
+
+            let { DAO, SCI } = this
+
+            try {
+                await new this.entities.Product({ product: { id: id }, SCI, DAO }).delete(credential)
+                resolve()
+            }
+            catch (erro) {
+                reject(erro)
+            }
         })
     }
 
@@ -67,4 +83,57 @@ module.exports = class UseCases {
             }
         })
     }
+
+    get_product(id, credential) {
+        return new Promise(async (resolve, reject) => {
+            if (!credential) {
+                console.log(Error("CREDENTIAL IS MISSINGF"))
+                return reject("INTERNAL SERVER ERROR, TRY LATER")
+            }
+
+            let { entities, SCI, DAO } = this
+
+            try {
+                let product = await new entities.Product({ product: { id: id }, DAO, SCI }).load()
+                await product.validate(credential)
+                console.log({ product })
+                resolve(product)
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
+    }
+
+    get_user_products(credential) {
+        return new Promise(async (resolve, reject) => {
+            if (!credential) {
+                console.log(Error("CREDENTIAL IS MISSINGF"))
+                return reject("INTERNAL SERVER ERROR, TRY LATER")
+            }
+
+            let { DAO, SCI, entities } = this
+            let config = {
+                level: 4,
+                scope: {
+                    read: true,
+                    write: false,
+                    third_party: {
+                        read: false,
+                        write: false
+                    }
+                }
+            }
+
+            try {
+                await SCI.Authenticator.checkCredentialClearance(config, credential)
+                let products = await new entities.Product({ DAO, SCI }).search({ user: credential.user })
+                resolve(products)
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
+    }
+
 }

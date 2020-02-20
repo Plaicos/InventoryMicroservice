@@ -45,4 +45,54 @@ module.exports = class Controller {
             }
         }
     }
+
+    delete_product() {
+        var self = this
+        return async function (call, callback) {
+            let { id, credential } = call.request
+
+            try {
+                await self.UseCases.delete_product(id, credential)
+                let statusResponse = {
+                    status: "ok"
+                }
+                callback(null, statusResponse)
+            }
+            catch (erro) {
+                self.handleError(erro, callback)
+            }
+        }
+    }
+
+    get_product() {
+        var self = this
+        return async function (call, callback) {
+            let { id, credential } = call.request
+
+            try {
+                let product = await self.UseCases.get_product(id, credential)
+                callback(null, product)
+            }
+            catch (erro) {
+                self.handleError(erro, callback)
+            }
+        }
+    }
+
+    get_user_products() {
+        var self = this
+        return async function (call, callback) {
+            let { credential } = call.request
+
+            try {
+                let products = {
+                    products: await self.UseCases.get_user_products(credential)
+                }
+                callback(null, products)
+            }
+            catch (erro) {
+                self.handleError(erro, callback)
+            }
+        }
+    }
 }

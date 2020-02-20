@@ -6,6 +6,7 @@ module.exports = class Product {
         this.entities = require("./SubEntities/ProductSubEntities")
     }
 
+    // methods from the product
     build() {
         return new Promise(async (resolve, reject) => {
             let { entities, DAO, product } = this
@@ -63,6 +64,160 @@ module.exports = class Product {
         })
     }
 
+    delete(credential) {
+        return new Promise(async (resolve, reject) => {
+            let { product, DAO, SCI } = this
+            let { id } = product
+
+            try {
+                let owner = await DAO.getProductOwner(id)
+
+                if (owner === credential.user) {
+                    let config = {
+                        level: 4,
+                        scope: {
+                            read: true,
+                            write: true,
+                            third_party: {
+                                read: false,
+                                write: false
+                            }
+                        }
+                    }
+                    await SCI.Authenticator.checkCredentialClearance(config, credential)
+                    await DAO.deleteProduct(id)
+                }
+                else {
+                    let config = {
+                        level: 4,
+                        scope: {
+                            read: true,
+                            write: true,
+                            third_party: {
+                                read: true,
+                                write: true
+                            }
+                        }
+                    }
+                    await SCI.Authenticator.checkCredentialClearance(config, credential)
+                    await DAO.deleteProduct(id)
+                }
+                resolve()
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
+    }
+
+    load() {
+        return new Promise(async (resolve, reject) => {
+            let { DAO, product, entities } = this
+            let { id } = product
+
+            try {
+                await entities.id({ id, DAO })
+                product = await DAO.getProduct(id)
+                product = this.methods(product)
+                resolve(product)
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
+    }
+
+    search(filters) {
+        return new Promise(async (resolve, reject) => {
+            if (filters && typeof filters !== "object") {
+                return reject("If provided, search filters must be a valid object")
+            }
+
+            let { entities, DAO, SCI } = this
+            let
+                {
+                    user,
+                    name,
+                    type,
+                    manufacturer,
+                    made_in,
+                    application,
+                    inci_name,
+                    functions,
+                    origin,
+                    lead_time,
+                    shelf_life,
+                    availability,
+                    packing,
+                    free_from,
+                    offset,
+                    limit
+                } = filters;
+            let filter = {}
+
+            try {
+                if (user) {
+                    filter.user = await entities.user({ user, SCI })
+                }
+                if (name) {
+                    filter.name = await entities.name(name)
+                }
+                if (type) {
+                    filter.type = await entities.type({ type, DAO })
+                }
+                if (manufacturer) {
+                    filter.manufacturer = await entities.manufacturer(manufacturer)
+                }
+                if (made_in) {
+                    filter.made_in = await entities.made_in({ made_in, DAO })
+                }
+                if (application) {
+                    filter.application = await entities.application({ application, DAO })
+                }
+                if (inci_name) {
+                    filter.inci_name = await entities.inci_name({ inci_name, DAO })
+                }
+                if (functions) {
+
+                }
+                if (origin) {
+                    filter.origin = await entities.origin({ origin, DAO })
+                }
+                if (lead_time) {
+                    filter.lead_time = await entities.lead_time({ lead_time })
+                }
+                if (shelf_life) {
+                    filter.shelf_life = await entities.shelf_life({ shelf_life })
+                }
+                if (availability) {
+                    filter.availability = await entities.availability({ availability, DAO })
+                }
+                if (free_from) {
+                    filter.free_from = await entities.free_from({ free_from })
+                }
+                if (limit) {
+                    filter.limit = await entities.limit(limit)
+                }
+                else {
+                    filter.limit = 30
+                }
+                if (offset) {
+                    filter.offset = await entities.offset(offset)
+                }
+                else {
+                    filter.offset = 0
+                }
+
+                let result = await DAO.searchProduct(filter)
+                resolve(result)
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
+    }
+
+    //global entity validation methods
     global(product, editMode) {
         return new Promise(async (resolve, reject) => {
             let { entities, DAO, SCI } = this
@@ -89,7 +244,7 @@ module.exports = class Product {
         })
     }
 
-    // type specific buisness logic
+    // type specific entity validation
     raw_material(data, editMode) {
         return new Promise(async (resolve, reject) => {
             let { DAO, entities } = this
@@ -262,7 +417,7 @@ module.exports = class Product {
                 try {
                     await SCI.Authenticator.checkCredentialClearance(config, credential)
                     if (credential.user !== this.user) {
-                        return reject("Cant operate another user's post")
+                        return reject("Cant operate another user's product")
                     }
                     resolve()
                 }

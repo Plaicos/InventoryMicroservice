@@ -15,7 +15,9 @@ module.exports = class API {
 
         let api = {
             add_product: Controller.add_product(),
-            edit_product: Controller.edit_product()
+            edit_product: Controller.edit_product(),
+            delete_product: Controller.delete_product(),
+            get_user_products: Controller.get_user_products()
         }
         return Object.freeze(api)
     }
