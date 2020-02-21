@@ -5,6 +5,28 @@ service Inventory {
     rpc edit_product (productEdit) returns (statusResponse);
     rpc delete_product (productDelete) returns (statusResponse) ;
     rpc get_user_products (productSearch) returns (productSearchresult);
+    rpc search_inciName (inciSearch) returns (inciSearchResult);
+}
+
+message inci {
+    string inci = 1;
+    repeated string functions = 2;
+    string cosing_ref_num = 3;
+    string cas_number = 4;
+    string chemical_desc = 5;
+}
+
+message inciSearch {
+    inciSearchFilter filters = 1;
+    credential credential = 2;
+}
+
+message inciSearchResult {
+    repeated inci result = 1;
+}
+
+message inciSearchFilter {
+    string inci_name = 1;
 }
 
 message productMsg{

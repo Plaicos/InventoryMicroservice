@@ -136,4 +136,26 @@ module.exports = class UseCases {
         })
     }
 
+    search_inicName(filters, credential) {
+        return new Promise(async (resolve, reject) => {
+            if (!filters || typeof filters !== "object") {
+                return reject("Inci name search filters must be a valid object")
+            }
+            if (!credential) {
+                console.log(Error("CREDENTIAL IS MISSINGF"))
+                return reject("INTERNAL SERVER ERROR, TRY LATER")
+            }
+
+            let { DAO, SCI, entities } = this
+
+            try {
+                let result = await new entities.INCI({ DAO, SCI }).search(filters)
+                resolve(result)
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
+    }
+
 }

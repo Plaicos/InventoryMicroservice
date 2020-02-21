@@ -37,6 +37,30 @@ module.exports = class DAO {
         })
     }
 
+    searchInci(filters) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let offset = filters.offset
+                let limit = filters.limit
+                delete filters.offset
+                delete filters.limit
+
+                this.collections.inci.find(filters).limit(limit).skip(offset).toArray((erro, result) => {
+                    if (erro) {
+                        reject(erro)
+                    }
+                    else {
+                        console.log({ filters, result })
+                        resolve(result)
+                    }
+                })
+            }
+            catch (erro) {
+                erro
+            }
+        })
+    }
+
     registerProduct(product) {
         return new Promise(async (resolve, reject) => {
             try {

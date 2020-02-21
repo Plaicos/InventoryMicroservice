@@ -95,4 +95,21 @@ module.exports = class Controller {
             }
         }
     }
+
+    search_inciName(){
+        var self = this
+        return async function (call, callback) {
+            let { filters, credential } = call.request
+
+            try {
+                let result = {
+                    result: await self.UseCases.search_inicName(filters, credential)
+                }
+                callback(null, result)
+            }
+            catch (erro) {
+                self.handleError(erro, callback)
+            }
+        }
+    }
 }
