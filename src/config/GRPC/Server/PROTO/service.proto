@@ -1,4 +1,5 @@
 syntax = "proto3";
+package InventoryPackage;
 
 service Inventory {
     rpc add_product (productMsg) returns (statusResponse);
