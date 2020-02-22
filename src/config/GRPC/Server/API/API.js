@@ -18,7 +18,8 @@ module.exports = class API {
             edit_product: Controller.edit_product(),
             delete_product: Controller.delete_product(),
             get_user_products: Controller.get_user_products(),
-            search_inciName: Controller.search_inciName()
+            search_inciName: Controller.search_inciName(),
+            check_location: Controller.check_location()
         }
         return Object.freeze(api)
     }

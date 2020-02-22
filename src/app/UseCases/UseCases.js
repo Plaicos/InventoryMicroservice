@@ -158,4 +158,26 @@ module.exports = class UseCases {
         })
     }
 
+    checkLocation(location) {
+        return new Promise(async (resolve, reject) => {
+            if (!location || typeof location !== "object") {
+                return reject("Location must be a valid object")
+            }
+
+            let { DAO } = this
+
+            try {
+                if (!await DAO.checkLocation(location)) {
+                    resolve(false)
+                }
+                else {
+                    resolve(true)
+                }
+            }
+            catch (erro) {
+                reject(erro)
+            }
+        })
+    }
+
 }

@@ -5,7 +5,7 @@ module.exports = class DAO {
         this.collections = {
             products: db.collection("products"),
             types: db.collection("types"),
-            madeIn: db.collection("countries"),
+            countries: db.collection("countries"),
             origins: db.collection("origins"),
             applications: db.collection("applications"),
             inci: db.collection("inci"),
@@ -174,7 +174,7 @@ module.exports = class DAO {
 
     checkMadeIn(made_in) {
         return new Promise(async (resolve, reject) => {
-            this.collections.madeIn.find({ name: made_in }).toArray((erro, result) => {
+            this.collections.countries.find({ name: made_in }).toArray((erro, result) => {
                 if (erro) {
                     return reject(erro)
                 }
@@ -251,6 +251,23 @@ module.exports = class DAO {
                 }
                 else {
                     return resolve(false)
+                }
+            })
+        })
+    }
+
+    checkLocation(location) {
+        return new Promise(async (resolve, reject) => {
+            this.collections.countries.find({ name: location.country, states: { $elemMatch: { name: location.state, cities: { $elemMatch: { name: location.city } } } } }).toArray((erro, result) => {
+                if (erro) {
+                    return reject(erro)
+                }
+
+                if (result.length > 0) {
+                    resolve(true)
+                }
+                else {
+                    resolve(false)
                 }
             })
         })

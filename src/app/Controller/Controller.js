@@ -96,7 +96,7 @@ module.exports = class Controller {
         }
     }
 
-    search_inciName(){
+    search_inciName() {
         var self = this
         return async function (call, callback) {
             let { filters, credential } = call.request
@@ -112,4 +112,26 @@ module.exports = class Controller {
             }
         }
     }
+
+    check_location() {
+        var self = this;
+        return async function (call, callback) {
+            let location = call.request
+            var statusResponse = {}
+
+            try {
+                if (await self.UseCases.checkLocation(location)) {
+                    statusResponse.status = "ok"
+                }
+                else {
+                    statusResponse.status = "Invalid Location"
+                }
+                callback(null, statusResponse)
+            }
+            catch (erro) {
+                self.handleError(erro, callback)
+            }
+        }
+    }
+
 }
