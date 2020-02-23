@@ -96,7 +96,6 @@ module.exports = class UseCases {
             try {
                 let product = await new entities.Product({ product: { id: id }, DAO, SCI }).load()
                 await product.validate(credential)
-                console.log({ product })
                 resolve(product)
             }
             catch (erro) {
@@ -135,7 +134,7 @@ module.exports = class UseCases {
             }
         })
     }
-
+    
     search_inicName(filters, credential) {
         return new Promise(async (resolve, reject) => {
             if (!filters || typeof filters !== "object") {

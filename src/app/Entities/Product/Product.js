@@ -396,10 +396,55 @@ module.exports = class Product {
     // __proto__ injection of methods
     methods(product) {
         product.__proto__.validate = this.validate()
+        product.__proto__.operate = this.operate()
         return product;
     }
 
     validate() {
+        var SCI = this.SCI
+        return function (credential) {
+            return new Promise(async (resolve, reject) => {
+
+                if (credential.user !== this.user) {
+                    var config = {
+                        level: 3,
+                        scope: {
+                            read: false,
+                            write: false,
+                            third_party: {
+                                read: true,
+                                write: true
+                            }
+                        }
+                    }
+                }
+                else {
+                    var config = {
+                        level: 4,
+                        scope: {
+                            read: true,
+                            write: true,
+                            third_party: {
+                                read: false,
+                                write: false
+                            }
+                        }
+                    }
+
+                }
+
+                try {
+                    await SCI.Authenticator.checkCredentialClearance(config, credential)
+                }
+                catch (erro) {
+                    return reject(`Unathorized , reason: ${erro}`)
+                }
+                resolve()
+            });
+        }
+    }
+
+    operate() {
         var SCI = this.SCI
         return function (credential) {
             return new Promise(async (resolve, reject) => {
@@ -414,16 +459,18 @@ module.exports = class Product {
                         }
                     }
                 }
+
                 try {
                     await SCI.Authenticator.checkCredentialClearance(config, credential)
-                    if (credential.user !== this.user) {
-                        return reject("Cant operate another user's product")
-                    }
-                    resolve()
                 }
                 catch (erro) {
-                    reject("Unathorized")
+                    return reject(`Unathorized , reason: ${erro}`)
                 }
+
+                if (credential.user !== this.user) {
+                    return reject("Cant operate another user's product")
+                }
+                resolve()
             });
         }
     }

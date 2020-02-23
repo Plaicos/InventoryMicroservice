@@ -8,6 +8,7 @@ service Inventory {
     rpc get_user_products (productSearch) returns (productSearchresult);
     rpc search_inciName (inciSearch) returns (inciSearchResult);
     rpc check_location (location) returns (statusResponse);
+    rpc get_product(productGet) returns (product);
 }
 
 message location {
@@ -61,7 +62,12 @@ message product {
 }
 
 message productSearch{
-    credential credential =1;
+    credential credential = 1;
+}
+
+message productGet {
+    string id = 1;
+    credential credential = 2;
 }
 
 message productSearchresult{
@@ -75,11 +81,6 @@ message productEdit {
 }
 
 message productDelete {
-    string id = 1;
-    credential credential = 2;
-}
-
-message productGet {
     string id = 1;
     credential credential = 2;
 }
